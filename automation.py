@@ -5,7 +5,7 @@ Selenium automation module for Merit Akademik system
 import os
 import sys
 import time
-import pandas as pd
+import csv
 from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -159,6 +159,8 @@ class MeritAkademikAutomation:
 
             # Try different possible selectors for login button
             login_button_selectors = [
+                (By.XPATH, "//input[@name='login' and @value='Login']"),
+                (By.XPATH, "//input[@type='submit' and @value='Login']"),
                 (By.XPATH, "//input[@type='submit' and @value='Log Masuk']"),
                 (By.XPATH, "//button[contains(text(), 'Log Masuk')]"),
                 (By.XPATH, "//input[@type='submit']"),
@@ -410,17 +412,29 @@ class MeritAkademikAutomation:
             return None
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        failed_df = pd.DataFrame({
-            'matric_number': failed_matrics,
-            'timestamp': [datetime.now().strftime("%Y-%m-%d %H:%M:%S")] * len(failed_matrics),
-            'sesi': [sesi] * len(failed_matrics),
-            'semester': [semester] * len(failed_matrics),
-            'achievement': [achievement] * len(failed_matrics)
-        })
+
+        # Create CSV data
+        columns = ['matric_number', 'timestamp',
+                   'sesi', 'semester', 'achievement']
+        rows_data = []
+        current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        for matric in failed_matrics:
+            rows_data.append([matric, current_timestamp,
+                             sesi, semester, achievement])
 
         failed_file = os.path.join(
             UPLOAD_FOLDER, f"failed_matrics_{timestamp}.csv")
-        failed_df.to_csv(failed_file, index=False)
+
+        # Write CSV file
+        try:
+            with open(failed_file, 'w', encoding='utf-8', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(columns)
+                writer.writerows(rows_data)
+        except Exception as e:
+            raise Exception(f"Error writing failed matrics file: {str(e)}")
+
         return failed_file
 
     def quit(self):
@@ -431,4 +445,3 @@ class MeritAkademikAutomation:
     def __del__(self):
         """Ensure webdriver is closed when object is destroyed."""
         self.quit()
- 

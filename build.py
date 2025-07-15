@@ -34,16 +34,16 @@ def build_executable():
         subprocess.check_call(
             [sys.executable, "-m", "PyInstaller", "build_executable.spec"])
 
-        exe_path = Path(
-            "dist/MeritAkademikAutomation/MeritAkademikAutomation.exe")
+        # Single file executable
+        exe_path = Path("dist/MeritAkademikAutomation.exe")
         if exe_path.exists():
             size_mb = exe_path.stat().st_size / (1024 * 1024)
             print(f"\n[SUCCESS] Executable created: {exe_path}")
             print(f"[INFO] Size: {size_mb:.1f} MB")
             print("\n[INFO] To run the application:")
-            print("1. Navigate to: dist\\MeritAkademikAutomation")
-            print("2. Double-click MeritAkademikAutomation.exe")
-            print("3. Open browser to http://localhost:5000")
+            print("1. Double-click: dist\\MeritAkademikAutomation.exe")
+            print("2. The app will start and open automatically in your browser")
+            print("3. If browser doesn't open, go to http://localhost:5000")
             return True
         else:
             print("[ERROR] Executable not found after build")

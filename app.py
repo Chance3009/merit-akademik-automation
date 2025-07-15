@@ -943,7 +943,3 @@ def run_automation():
 def serve_screenshot(filename):
     """Serve screenshot files for debugging."""
     return send_from_directory(SCREENSHOTS_FOLDER, filename)
-
-
-if __name__ == '__main__':
-    app.run(debug=DEBUG, host='0.0.0.0', port=5000)

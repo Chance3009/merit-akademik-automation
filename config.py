@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 # Version information
-APP_VERSION = "1.0.5"  # Update this when making changes
+APP_VERSION = "1.0.8"  # Updated: Changed login URL to upmid/login.php
 APP_TITLE = f"Merit Akademik Automation System v{APP_VERSION}"
 
 # Application settings
@@ -32,7 +32,7 @@ SCREENSHOTS_FOLDER = os.path.join(BASE_PATH, 'data', 'screenshots')
 ALLOWED_EXTENSIONS = {'xlsx', 'csv'}
 
 # eKolej system settings
-LOGIN_URL = "https://ekolej.upm.edu.my/login_guest/indexlogin.php"
+LOGIN_URL = "https://ekolej.upm.edu.my/upmid/login.php"
 
 # Selenium settings
 SELENIUM_TIMEOUT = 10

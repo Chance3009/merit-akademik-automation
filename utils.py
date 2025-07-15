@@ -3,9 +3,115 @@ Utility functions for Merit Akademik Automation System
 """
 
 import os
-import pandas as pd
+import csv
+import openpyxl
 from werkzeug.utils import secure_filename
 from config import ALLOWED_EXTENSIONS, UPLOAD_FOLDER
+
+
+class LightweightFileReader:
+    """Lightweight file reader to replace pandas dependency."""
+
+    @staticmethod
+    def read_excel_file(filepath):
+        """
+        Read Excel file and return data as list of dictionaries.
+
+        Args:
+            filepath (str): Path to Excel file
+
+        Returns:
+            tuple: (column_names, rows_data)
+        """
+        try:
+            workbook = openpyxl.load_workbook(filepath, read_only=True)
+            sheet = workbook.active
+
+            # Get all rows as list
+            rows = list(sheet.iter_rows(values_only=True))
+            if not rows:
+                return [], []
+
+            # First row as column names
+            columns = [
+                str(col) if col is not None else f"Column_{i}" for i, col in enumerate(rows[0])]
+
+            # Rest as data rows
+            data_rows = []
+            for row in rows[1:]:
+                # Convert row to list and handle None values
+                row_data = [
+                    str(cell) if cell is not None else '' for cell in row]
+                data_rows.append(row_data)
+
+            workbook.close()
+            return columns, data_rows
+
+        except Exception as e:
+            raise Exception(f"Error reading Excel file: {str(e)}")
+
+    @staticmethod
+    def read_csv_file(filepath):
+        """
+        Read CSV file and return data as list of dictionaries.
+
+        Args:
+            filepath (str): Path to CSV file
+
+        Returns:
+            tuple: (column_names, rows_data)
+        """
+        try:
+            with open(filepath, 'r', encoding='utf-8', newline='') as file:
+                # Try to detect delimiter
+                sample = file.read(1024)
+                file.seek(0)
+                sniffer = csv.Sniffer()
+                delimiter = sniffer.sniff(sample).delimiter
+
+                reader = csv.reader(file, delimiter=delimiter)
+                rows = list(reader)
+
+                if not rows:
+                    return [], []
+
+                # First row as column names
+                columns = [str(col).strip() for col in rows[0]]
+
+                # Rest as data rows
+                data_rows = []
+                for row in rows[1:]:
+                    # Ensure each row has same number of columns as header
+                    row_data = []
+                    for i in range(len(columns)):
+                        if i < len(row):
+                            row_data.append(str(row[i]).strip())
+                        else:
+                            row_data.append('')
+                    data_rows.append(row_data)
+
+                return columns, data_rows
+
+        except Exception as e:
+            raise Exception(f"Error reading CSV file: {str(e)}")
+
+    @staticmethod
+    def write_csv_file(filepath, columns, rows_data):
+        """
+        Write data to CSV file.
+
+        Args:
+            filepath (str): Path to output CSV file
+            columns (list): Column names
+            rows_data (list): List of row data
+        """
+        try:
+            with open(filepath, 'w', encoding='utf-8', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(columns)
+                writer.writerows(rows_data)
+        except Exception as e:
+            raise Exception(f"Error writing CSV file: {str(e)}")
 
 
 def allowed_file(filename):
@@ -19,32 +125,6 @@ def allowed_file(filename):
         bool: True if file extension is allowed, False otherwise
     """
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-def read_excel_file(filepath):
-    """
-    Read Excel or CSV file and return DataFrame.
-
-    Args:
-        filepath (str): Path to the file
-
-    Returns:
-        pandas.DataFrame: DataFrame containing the data
-
-    Raises:
-        Exception: If file cannot be read
-    """
-    try:
-        if filepath.endswith('.xlsx'):
-            df = pd.read_excel(filepath)
-        elif filepath.endswith('.csv'):
-            df = pd.read_csv(filepath)
-        else:
-            raise Exception("Unsupported file format")
-
-        return df
-    except Exception as e:
-        raise Exception(f"Error reading file: {str(e)}")
 
 
 def process_uploaded_file(file):
@@ -84,8 +164,14 @@ def get_file_columns(filepath):
     Returns:
         list: List of column names
     """
-    df = read_excel_file(filepath)
-    return df.columns.tolist()
+    if filepath.endswith('.xlsx'):
+        columns, _ = LightweightFileReader.read_excel_file(filepath)
+    elif filepath.endswith('.csv'):
+        columns, _ = LightweightFileReader.read_csv_file(filepath)
+    else:
+        raise Exception("Unsupported file format")
+
+    return columns
 
 
 def get_matric_list(filepath, matric_column):
@@ -99,14 +185,26 @@ def get_matric_list(filepath, matric_column):
     Returns:
         list: List of matric numbers as strings
     """
-    df = read_excel_file(filepath)
-    if matric_column not in df.columns:
+    if filepath.endswith('.xlsx'):
+        columns, rows_data = LightweightFileReader.read_excel_file(filepath)
+    elif filepath.endswith('.csv'):
+        columns, rows_data = LightweightFileReader.read_csv_file(filepath)
+    else:
+        raise Exception("Unsupported file format")
+
+    if matric_column not in columns:
         raise Exception(f"Column '{matric_column}' not found in file")
 
-    matric_list = df[matric_column].astype(str).tolist()
-    # Remove any empty or NaN values
-    matric_list = [
-        matric for matric in matric_list if matric and matric != 'nan']
+    # Find the index of the matric column
+    column_index = columns.index(matric_column)
+
+    # Extract matric numbers from that column
+    matric_list = []
+    for row in rows_data:
+        if column_index < len(row):
+            cell_value = str(row[column_index]).strip()
+            if cell_value and cell_value != 'nan' and cell_value != '':
+                matric_list.append(cell_value)
 
     return matric_list
 

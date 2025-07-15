@@ -8,21 +8,21 @@ A web application that automates Merit Akademik entries in the UPM eKolej system
 
 ```
 merit-akademik/
-├── app/                    # Main application code
-│   ├── __init__.py
-│   ├── app.py             # Flask application
-│   ├── automation.py      # Selenium automation
-│   ├── config.py          # Configuration
-│   └── utils.py           # Utilities
+├── app.py                 # Flask application
+├── automation.py          # Selenium automation  
+├── config.py              # Configuration
+├── utils.py               # Utilities
+├── run.py                 # App entry point
+├── build.py               # Build script
+├── requirements.txt       # Dependencies
+├── build_executable.spec  # PyInstaller config
 ├── data/                  # Data directories
 │   ├── uploads/          # Excel/CSV files
 │   └── screenshots/      # Error screenshots
-├── build.py              # Build script
-├── launcher.py           # Application launcher
-├── requirements.txt      # Dependencies
-├── README.md            # Documentation
-├── DEPLOYMENT_GUIDE.md  # Deployment guide
-└── build_executable.spec # PyInstaller config
+├── dist/                  # Build output
+├── chrome-bin/           # Bundled Chrome binaries
+├── .gitignore            # Git ignore rules
+└── README.md             # Documentation
 ```
 
 ## Development Setup
@@ -34,23 +34,13 @@ pip install -r requirements.txt
 
 2. Run the application:
 ```bash
-# Option 1: Using launcher (recommended)
-python launcher.py
-
-# Option 2: Direct execution
-python app/app.py
+python run.py
 ```
 
 ## Production Build
 
-### Option 1: Using Build Script (Recommended)
 ```bash
 python build.py
-```
-
-### Option 2: Using Batch File (Windows)
-```bash
-BUILD_EXECUTABLE.bat
 ```
 
 ## Application Features
@@ -66,14 +56,14 @@ BUILD_EXECUTABLE.bat
 
 ### Development Mode
 ```python
-# app/config.py
+# config.py
 DEBUG = True
 SELENIUM_HEADLESS = False
 ```
 
 ### Production Mode
 ```python
-# app/config.py
+# config.py
 DEBUG = False
 SELENIUM_HEADLESS = True
 ```
@@ -97,6 +87,7 @@ SELENIUM_HEADLESS = True
 - `data/uploads/`: Excel/CSV files and failed records
 - `data/screenshots/`: Error debugging screenshots
 - `dist/`: Production build output
+- `chrome-bin/`: Bundled Chrome browser binaries
 
 ## Security Features
 
