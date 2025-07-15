@@ -144,9 +144,11 @@ dmypy.json
 ehthumbs.db
 Thumbs.db
 
-# Project-specific files
-uploads/
-screenshots/
+# Project-specific files and directories
+data/uploads/*
+!data/uploads/.gitkeep
+data/screenshots/*
+!data/screenshots/.gitkeep
 *.png
 *.jpg
 *.jpeg
@@ -176,8 +178,8 @@ geckodriver.exe
 msedgedriver.exe
 
 # Configuration files with sensitive data
-config_local.py
-secrets.py
+app/config_local.py
+app/secrets.py
 .secrets
 
 # Error tracking files
@@ -188,11 +190,6 @@ failed_*.csv
 *.bak
 *.backup
 *.orig
-
-# Custom paths for this project
-matric_values.csv
-extract_matric.py
-app_new.py 
 
 # Chrome binaries and related files
 chrome-bin/

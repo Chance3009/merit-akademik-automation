@@ -8,15 +8,21 @@ A web application that automates Merit Akademik entries in the UPM eKolej system
 
 ```
 merit-akademik/
-├── app.py                  # Main Flask application
-├── automation.py           # Selenium automation logic
-├── config.py              # Configuration settings
-├── utils.py               # Utility functions
-├── requirements.txt       # Dependencies
+├── app/                    # Main application code
+│   ├── __init__.py
+│   ├── app.py             # Flask application
+│   ├── automation.py      # Selenium automation
+│   ├── config.py          # Configuration
+│   └── utils.py           # Utilities
+├── data/                  # Data directories
+│   ├── uploads/          # Excel/CSV files
+│   └── screenshots/      # Error screenshots
 ├── build.py              # Build script
-├── BUILD_EXECUTABLE.bat   # Windows build script
 ├── launcher.py           # Application launcher
-└── build_executable.spec  # PyInstaller configuration
+├── requirements.txt      # Dependencies
+├── README.md            # Documentation
+├── DEPLOYMENT_GUIDE.md  # Deployment guide
+└── build_executable.spec # PyInstaller config
 ```
 
 ## Development Setup
@@ -28,7 +34,11 @@ pip install -r requirements.txt
 
 2. Run the application:
 ```bash
-python app.py
+# Option 1: Using launcher (recommended)
+python launcher.py
+
+# Option 2: Direct execution
+python app/app.py
 ```
 
 ## Production Build
@@ -56,14 +66,14 @@ BUILD_EXECUTABLE.bat
 
 ### Development Mode
 ```python
-# config.py
+# app/config.py
 DEBUG = True
 SELENIUM_HEADLESS = False
 ```
 
 ### Production Mode
 ```python
-# config.py
+# app/config.py
 DEBUG = False
 SELENIUM_HEADLESS = True
 ```
@@ -84,9 +94,9 @@ SELENIUM_HEADLESS = True
 
 ## File Management
 
-- `/uploads`: Excel/CSV files and failed records
-- `/screenshots`: Error debugging screenshots
-- `/dist`: Production build output
+- `data/uploads/`: Excel/CSV files and failed records
+- `data/screenshots/`: Error debugging screenshots
+- `dist/`: Production build output
 
 ## Security Features
 
@@ -97,24 +107,20 @@ SELENIUM_HEADLESS = True
 
 ## Common Issues
 
-1. Port 5000 in use:
-   - Close other applications
-   - Check for running instances
+### Port 5000 Conflict
+- Close other applications using port 5000
+- Restart the application
 
-2. Chrome driver issues:
-   - Verify Chrome installation
-   - Check chrome-bin folder
+### Chrome Issues
+- Verify Chrome installation
+- Check chrome-bin folder integrity
 
-3. Login failures:
-   - Verify network connection
-   - Check eKolej accessibility
+### Login Problems
+- Verify network connectivity
+- Ensure eKolej system access
+- Check credentials
 
-## Support
-
-- Check `screenshots/` for error images
-- Review `uploads/failed_matrics_*.csv` for failed entries
-- See error messages in web interface
-
-## License
-
-Internal use only - UPM Faculty  
+### File Processing
+- Use .xlsx or .csv format
+- Verify file permissions
+- Check file structure  

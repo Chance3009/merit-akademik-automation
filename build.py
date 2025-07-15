@@ -1,122 +1,75 @@
 #!/usr/bin/env python3
 """
-Build script for Merit Akademik Automation System
-Creates a PyInstaller executable with all dependencies
+Build script for Merit Akademik Automation
 """
-
 import os
 import sys
-import subprocess
 import shutil
+import subprocess
 from pathlib import Path
 
 
-def run_command(cmd):
-    """Run a command and return True if successful."""
-    try:
-        result = subprocess.run(
-            cmd, shell=True, capture_output=True, text=True)
-        if result.returncode == 0:
-            return True
-        else:
-            print(f"Error: {result.stderr}")
-            return False
-    except Exception as e:
-        print(f"Exception: {e}")
-        return False
-
-
-def create_directories():
-    """Create necessary directories."""
-    directories = ['uploads', 'screenshots', 'dist', 'build']
-    for directory in directories:
-        Path(directory).mkdir(exist_ok=True)
-        print(f"[+] Created directory: {directory}")
-
-
 def install_requirements():
-    """Install Python requirements."""
-    cmd = f"{sys.executable} -m pip install -r requirements.txt"
-    print(f"[+] {cmd}")
-    return run_command(cmd)
+    """Install Python dependencies."""
+    print("[INFO] Installing requirements...")
+    try:
+        subprocess.check_call(
+            [sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
+        return True
+    except subprocess.CalledProcessError:
+        print("[ERROR] Failed to install requirements")
+        return False
 
 
 def build_executable():
     """Build the executable using PyInstaller."""
-    cmd = "pyinstaller build_executable.spec"
-    print(f"[+] {cmd}")
-    return run_command(cmd)
+    print("[INFO] Building executable...")
+    try:
+        # Clean up old build and dist directories
+        for dir_name in ['build', 'dist']:
+            if os.path.exists(dir_name):
+                shutil.rmtree(dir_name)
 
+        # Build using spec file
+        subprocess.check_call(
+            [sys.executable, "-m", "PyInstaller", "build_executable.spec"])
 
-def cleanup():
-    """Clean up build artifacts."""
-    # Keep dist folder but clean build folder
-    if Path('build').exists():
-        shutil.rmtree('build')
-        print("[+] Cleaned up build artifacts")
+        exe_path = Path(
+            "dist/MeritAkademikAutomation/MeritAkademikAutomation.exe")
+        if exe_path.exists():
+            size_mb = exe_path.stat().st_size / (1024 * 1024)
+            print(f"\n[SUCCESS] Executable created: {exe_path}")
+            print(f"[INFO] Size: {size_mb:.1f} MB")
+            print("\n[INFO] To run the application:")
+            print("1. Navigate to: dist\\MeritAkademikAutomation")
+            print("2. Double-click MeritAkademikAutomation.exe")
+            print("3. Open browser to http://localhost:5000")
+            return True
+        else:
+            print("[ERROR] Executable not found after build")
+            return False
+
+    except subprocess.CalledProcessError as e:
+        print(f"[ERROR] Build failed: {e}")
+        return False
 
 
 def main():
     """Main build process."""
-    print("Building Merit Akademik Automation System")
+    print("Merit Akademik Automation Builder")
     print("=" * 50)
-
-    # Create directories
-    create_directories()
 
     # Install requirements
     if not install_requirements():
-        print("[-] Failed to install requirements")
         return False
 
     # Build executable
     if not build_executable():
-        print("[-] Failed to build executable")
         return False
 
-    # Cleanup
-    cleanup()
-
-    # Check if executable was created
-    exe_path = Path("dist/MeritAkademikAutomation.exe")
-    if exe_path.exists():
-        exe_size = exe_path.stat().st_size
-        print(f"[+] Executable created successfully: {exe_path}")
-        print(f"[+] Size: {exe_size:,} bytes ({exe_size/1024/1024:.1f} MB)")
-
-        # List contents of dist directory
-        print("\n[+] Distribution contents:")
-        for item in Path("dist").iterdir():
-            if item.is_file():
-                size = item.stat().st_size
-                print(f"    {item.name}: {size:,} bytes")
-            elif item.is_dir():
-                file_count = len(list(item.rglob("*")))
-                print(f"    {item.name}/: {file_count} files")
-
-        return True
-    else:
-        print("[-] Executable not found after build")
-        return False
+    return True
 
 
 if __name__ == "__main__":
     success = main()
-
-    if success:
-        print("\n" + "=" * 50)
-        print("BUILD COMPLETED SUCCESSFULLY!")
-        print("=" * 50)
-        print(f"Executable location: dist/MeritAkademikAutomation.exe")
-        print("\nTo test the executable:")
-        print("1. Go to dist/ folder")
-        print("2. Double-click MeritAkademikAutomation.exe")
-        print("3. Open browser to http://localhost:5000")
-        print("\nTo create distribution package:")
-        print("python create_distribution.py")
-    else:
-        print("\n" + "=" * 50)
-        print("BUILD FAILED!")
-        print("=" * 50)
-        print("Check the error messages above for details.")
-        sys.exit(1)
+    sys.exit(0 if success else 1)

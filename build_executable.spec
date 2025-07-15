@@ -3,11 +3,12 @@
 block_cipher = None
 
 a = Analysis(
-    ['app.py'],
-    pathex=[],
+    ['run.py'],  # Changed from app/app.py to run.py
+    pathex=['.'],  # Add current directory to Python path
     binaries=[],
     datas=[
-        ('chrome-bin', 'chrome-bin'),
+        ('data/uploads', 'data/uploads'),
+        ('data/screenshots', 'data/screenshots'),
     ],
     hiddenimports=[
         'selenium.webdriver.common.by',
@@ -45,7 +46,7 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=False,  # Set to True if you want to see console output
+    console=True,  # Set to True to see any errors during startup
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,

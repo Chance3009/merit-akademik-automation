@@ -503,7 +503,7 @@ HTML_TEMPLATE = """
         <div class="header">
             <h1>{{ app_title }}</h1>
             <p>Automated processing of student merit records</p>
-            <div class="instructions">
+<div class="instructions">
                 <div class="instructions-title">Quick Guide</div>
                 <ul>
                     <li>Enter your eKolej credentials</li>
@@ -511,7 +511,7 @@ HTML_TEMPLATE = """
                     <li>Configure settings and run automation</li>
                 </ul>
             </div>
-        </div>
+</div>
 
                 <div class="main-content">
             <!-- Left Panel: Login & File Upload -->
@@ -519,19 +519,19 @@ HTML_TEMPLATE = """
                 <form method="post" enctype="multipart/form-data" id="mainForm">
                     <div class="section">
                         <div class="section-title">Login Credentials</div>
-                        <div class="form-group">
+  <div class="form-group">
                             <label for="username">Username</label>
                             <input type="text" id="username" name="username" class="form-control" placeholder="Enter username" value="{{ username or '' }}" required>
-                        </div>
-                        <div class="form-group">
+  </div>
+  <div class="form-group">
                             <label for="password">Password</label>
                             <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" value="{{ password or '' }}" required>
                         </div>
-                    </div>
+  </div>
                     
                     <div class="section">
                         <div class="section-title">Student Data</div>
-                        <div class="form-group">
+  <div class="form-group">
                             <label for="file">Upload File</label>
                             <div class="file-upload">
                                 <input type="file" id="file" name="file" accept=".xlsx,.csv" {% if not filename %}required{% endif %}>
@@ -540,24 +540,24 @@ HTML_TEMPLATE = """
                                 </label>
                             </div>
                         </div>
-                    </div>
-                </form>
+  </div>
+</form>
             </div>
-            
+
             <!-- Middle Panel: Configuration -->
-            {% if columns %}
+{% if columns %}
             <div class="panel">
                 <div class="section-title">Configuration</div>
                 <form method="post" action="{{ url_for('run_automation') }}" id="configForm">
-                    <div class="form-group">
+    <div class="form-group">
                         <label for="matric_column">Matric Column</label>
                         <select name="matric_column" id="matric_column" class="form-control" required>
                             <option value="">Select column</option>
-                            {% for col in columns %}
-                            <option value="{{ col }}">{{ col }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+        {% for col in columns %}
+          <option value="{{ col }}">{{ col }}</option>
+        {% endfor %}
+      </select>
+    </div>
                     
                     <div class="form-group">
                         <label for="sesi">Academic Session</label>
@@ -595,31 +595,31 @@ HTML_TEMPLATE = """
                     <input type="hidden" name="run_automation" value="true">
                     
                     <button type="submit" class="btn" id="runBtn">Run Automation</button>
-                </form>
+  </form>
             </div>
             {% else %}
             <div class="panel">
                 <div class="section-title">Configuration</div>
                 <div class="message info">Upload a file to configure automation settings.</div>
             </div>
-            {% endif %}
-            
+{% endif %}
+
             <!-- Right Panel: Results -->
             <div class="panel">
                 <div class="section-title">Process Status</div>
                 <div class="status-panel" id="statusPanel">
-                    {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                        {% for message in messages %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
                         <div class="message {% if 'Error' in message %}error{% elif 'Warning' in message %}warning{% elif 'Processing' in message %}info{% endif %}">
                             {{ message }}
                         </div>
-                        {% endfor %}
+    {% endfor %}
                     {% else %}
                         <div class="message info">Ready to process. Upload a file to begin.</div>
-                    {% endif %}
-                    {% endwith %}
-                    
+  {% endif %}
+{% endwith %}
+
                     <!-- Progress Section -->
                     <div class="progress-section" id="progressSection" style="display: none;">
                         <div class="progress-header">
@@ -649,8 +649,8 @@ HTML_TEMPLATE = """
                             <li>{{ matric }}</li>
                             {% endfor %}
                         </ul>
-                    </div>
-                    {% endif %}
+  </div>
+{% endif %}
                 </div>
                 
                 <div class="loading" id="loadingDiv">

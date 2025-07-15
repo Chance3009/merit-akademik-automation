@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 # Version information
-APP_VERSION = "1.0.3"  # Update this when making changes
+APP_VERSION = "1.0.5"  # Update this when making changes
 APP_TITLE = f"Merit Akademik Automation System v{APP_VERSION}"
 
 # Application settings
@@ -23,12 +23,12 @@ def get_base_path():
         return os.path.dirname(sys.executable)
     else:
         # Running as script
-        return os.path.dirname(os.path.abspath(__file__))
+        return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 BASE_PATH = get_base_path()
-UPLOAD_FOLDER = os.path.join(BASE_PATH, 'uploads')
-SCREENSHOTS_FOLDER = os.path.join(BASE_PATH, 'screenshots')
+UPLOAD_FOLDER = os.path.join(BASE_PATH, 'data', 'uploads')
+SCREENSHOTS_FOLDER = os.path.join(BASE_PATH, 'data', 'screenshots')
 ALLOWED_EXTENSIONS = {'xlsx', 'csv'}
 
 # eKolej system settings
@@ -37,7 +37,7 @@ LOGIN_URL = "https://ekolej.upm.edu.my/login_guest/indexlogin.php"
 # Selenium settings
 SELENIUM_TIMEOUT = 10
 SELENIUM_WAIT_TIME = 1
-SELENIUM_HEADLESS = False  # Set to True for production
+SELENIUM_HEADLESS = True  # Set to True for production
 
 # Dynamic options generation
 

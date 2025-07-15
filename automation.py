@@ -370,23 +370,23 @@ class MeritAkademikAutomation:
         failed_matrics = []
         total_count = len(matric_list)
 
-        print(f"🚀 Starting to process {total_count} matric numbers...")
+        print(f"[INFO] Starting to process {total_count} matric numbers...")
 
         for index, matric in enumerate(matric_list, 1):
             try:
                 # Report progress
                 self.update_progress(index, total_count,
                                      f"Processing matric {matric}")
-                print(f"📋 Processing {index}/{total_count}: {matric}")
+                print(f"[INFO] Processing {index}/{total_count}: {matric}")
 
                 self.process_single_matric(matric, sesi, semester, achievement)
                 success_count += 1
-                print(f"✅ Successfully processed {matric}")
+                print(f"[SUCCESS] Successfully processed {matric}")
 
             except Exception as e:
                 error_count += 1
                 failed_matrics.append(matric)
-                print(f"❌ Error processing matric {matric}: {str(e)}")
+                print(f"[ERROR] Error processing matric {matric}: {str(e)}")
 
                 # Continue with next matric even if one fails
                 continue
@@ -396,7 +396,7 @@ class MeritAkademikAutomation:
             total_count, total_count, f"Completed: {success_count} success, {error_count} errors")
 
         print(
-            f"🎯 Processing complete: {success_count} successful, {error_count} errors")
+            f"[INFO] Processing complete: {success_count} successful, {error_count} errors")
 
         return {
             'success_count': success_count,
@@ -431,3 +431,4 @@ class MeritAkademikAutomation:
     def __del__(self):
         """Ensure webdriver is closed when object is destroyed."""
         self.quit()
+ 
