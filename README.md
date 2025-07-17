@@ -4,6 +4,15 @@
 
 A web application that automates Merit Akademik entries in the UPM eKolej system. Built with Flask and Selenium for efficient batch processing.
 
+## Download
+
+Get the latest release from the [Releases tab](https://github.com/yourusername/merit-automation/releases).
+
+1. Download `MeritAutomation_v1.06.zip`
+2. Extract it
+3. Open and read `README.txt` inside the folder for detailed instructions
+4. Double-click `MeritAkademikAutomation.exe` to start the tool
+
 ## Project Structure
 
 ```
